@@ -1,5 +1,56 @@
 import "babel-polyfill";
 
+/**
+ * @author Michael Montaque
+ * @version 0.1
+ * @classdesc
+ * Redux-Mini is a light weight Redux framework. It allows you to manage the state of your data utilizing the same
+ * principles found on the Redux website.
+ * To learn more about Redux and its principles visit: http://redux.js.org/docs/introduction/CoreConcepts.html
+ *
+ * See below for a Quick example of how Redux-Mini works,
+ * otherwise check out the main.js file:
+ *
+ * @example
+ * // Add reducers to the Store
+ * // When the reducer runs it will add the return value to the internal store under the key of the first
+ * // argument, which is <people>.
+ * // This will only run when the action's type property matches the 2 argument in this function, which is 'ADD'
+ * // Make sure you return the default state on the case when there is nothing in the state. In this example we init
+ * // to an array
+ *   Store.registerReducer('people', 'ADD',(state = [], actions) => {
+ *       // The actions come from the dispatcher.
+ *       // Since this only runs when it matches you do not have to check the action's type or create switch statements
+ *       return [...state, actions.myData];
+ *   });
+ *
+ *   Store.registerReducer(''people', 'DELETE',(state = [], actions) => {
+ *       return [...state].filter((action, index) =>{
+ *           return index != actions.index;
+ *       });
+ *   });
+ *
+ *
+ *  // Create the store manager. You will be able to push changes to the store via Actions
+ *  const manager  = new Store();
+ *
+ *
+ *  // add a listener to the store to get updates every time a change is made.
+ *  manager.subscribe(function(store){
+ *       console.log(store)
+ *   })
+ *
+ *
+ *   // sends a message to the store to run the given event ('ADD' or 'DELETE') using myData
+ *   // What you send is entirely up to you as well as what you want the event name (type) to be.
+ *   manager.dispatch({type:'ADD', myData: {name: 'jerry'}});
+ *   manager.dispatch({type:'ADD', myData: {name: 'michael'}});
+ *   manager.dispatch({type:'ADD', myData: {name: 'kayla'}});
+ *   manager.dispatch({type:'DELETE', index:1});
+ *   // Ending value will be
+ *   { people: [{name: 'jerry'}, {name: 'kayla'}] }
+ */
+
 export const Store = (function () {
     const registeredReducers    = [];
     const onBefore              = {};
