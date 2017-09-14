@@ -1,5 +1,5 @@
 
-#Redux-Mini
+# Redux-Mini
 
 Redux-Mini is a light weight Redux framework. It allows you to manage the state of your data utilizing the same
 principles found on the Redux website.
