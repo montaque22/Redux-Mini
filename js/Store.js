@@ -50,7 +50,8 @@ export const Store = (function () {
 
         /**
          * Add listeners to respond to changes in the data store.
-         * @param { update_callback } cb - runs whenever the changes to the data store are completed
+         * @param { function } cb - runs whenever the changes to the data store are completed. This function
+         * contains one parameter called store, which is a copy of the current store data
          */
         this.subscribe = (cb) =>{
             cb(data);
@@ -266,33 +267,30 @@ export const Store = (function () {
  * @function
  * @callback onComplete
  * @description
- * Callback: Callback should be used to run animations. You must call next() to run the other callbacks (if there are any)
- * otherwise the other functions will hang.
+ * Callback Function: Callback should be used to run animations. You must call next() to run the other callbacks (if
+ * there are any) otherwise the other functions will hang.
  * @param {object} store - contains the data from the store at the event the callback was registered for.
  * @param {object} action - The action that is associated with the dispatch
  * @param {function} next - function to run the next callback
  */
 
-/**
- * @function
- * @callback update_callback
- * @description
- * Callback: Use this to listen to store update changes
- * @param {object} store - contains the data from the store at the event the callback was registered for.
- */
 
 /**
  * @function
  * @callback reducer
  * @description
- * Callback: Reducers are used organize data into the store. See http://redux.js.org/docs/basics/Reducers.html for details on Reducers.
+ * Callback: Reducers are used organize data into the store.
+ * See http://redux.js.org/docs/basics/Reducers.html for details on Reducers.
  * @param {object} state - contains the data from the store at the event the callback was registered for.
  * @param {Action} action - contains the data and the event type (actionKey) used to add to the store.
  */
 
 /**
- * @example
  * @typedef {object} Action
+ * @description
+ * This is the redux action object. It contains a some kind of key for the reducer to know what operation to run
+ * against the action object holds.
+ * To understand more about Actions, visit this link: http://redux.js.org/docs/basics/Actions.html
  * @property {string} type - used to determine which reducer to run.
- * @property {any} props - any other number of properties to send to the reducer.
+ * @property ...props - any other number of properties to send to the reducer.
  */

@@ -52,7 +52,6 @@ otherwise check out the main.js file:
 
 -   [Action](#action)
 -   [reducer](#reducer)
--   [update_callback](#update_callback)
 -   [onComplete](#oncomplete)
 -   [Store](#store)
     -   [subscribe](#subscribe)
@@ -67,16 +66,20 @@ otherwise check out the main.js file:
 
 ## Action
 
+This is the redux action object. It contains a some kind of key for the reducer to know what operation to run
+against the action object holds.
+To understand more about Actions, visit this link: <http://redux.js.org/docs/basics/Actions.html>
+
 Type: [object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)
 
 **Properties**
 
 -   `type` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** used to determine which reducer to run.
--   `props` **any** any other number of properties to send to the reducer.
 
 ## reducer
 
-Callback: Reducers are used organize data into the store. See <http://redux.js.org/docs/basics/Reducers.html> for details on Reducers.
+Callback: Reducers are used organize data into the store.
+See <http://redux.js.org/docs/basics/Reducers.html> for details on Reducers.
 
 Type: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)
 
@@ -85,20 +88,10 @@ Type: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Referen
 -   `state` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** contains the data from the store at the event the callback was registered for.
 -   `action` **[Action](#action)** contains the data and the event type (actionKey) used to add to the store.
 
-## update_callback
-
-Callback: Use this to listen to store update changes
-
-Type: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)
-
-**Parameters**
-
--   `store` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** contains the data from the store at the event the callback was registered for.
-
 ## onComplete
 
-Callback: Callback should be used to run animations. You must call next() to run the other callbacks (if there are any)
-otherwise the other functions will hang.
+Callback Function: Callback should be used to run animations. You must call next() to run the other callbacks (if
+there are any) otherwise the other functions will hang.
 
 Type: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)
 
@@ -124,7 +117,8 @@ Add listeners to respond to changes in the data store.
 
 **Parameters**
 
--   `cb` **[update_callback](#update_callback)** runs whenever the changes to the data store are completed
+-   `cb` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** runs whenever the changes to the data store are completed. This function
+    contains one parameter called store, which is a copy of the current store data
 
 ### dispatch
 
