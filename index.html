@@ -1,0 +1,109 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="manifest" href="site.webmanifest">
+        <link rel="apple-touch-icon" href="icon.png">
+        <!-- Place favicon.ico in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+
+    </head>
+    <body>
+        <!--[if lte IE 9]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+        <![endif]-->
+
+        <div class="container-fluid">
+            <h1>What Todo</h1>
+
+            <div class="inputs">
+                <label for="">Write your item</label>
+                <input id="item" type="text" placeholder="pick up milk">
+                <input id="add-item" type="button" value="+">
+            </div>
+
+            <div class="todo-wrapper">
+                <div id="todos"></div>
+                <div>
+                    <pre>
+                        <code class="object-map">
+
+                        </code>
+                    </pre>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Add your site or application content here -->
+        <script id="todo-items" type="text/x-handlebars-template">
+
+            {{#each todo}}
+            <div class="card">
+                <div class="card-block">
+                    <h4 class="card-title">{{item}}</h4>
+                    <p class="card-text">{{description}}</p>
+                    <a href="#" class="card-link remove-btn" data-index="{{@index}}">delete</a>
+
+                </div>
+            </div>
+
+            {{/each}}
+
+        </script>
+
+        <script id="todo-string" type="text/x-handlebars-template">
+
+            {{#each todo}}
+            <div>{</div>
+
+
+            <div>}</div>
+            <div class="card">
+                <div class="card-block">
+                    <h4 class="card-title">{{item}}</h4>
+                    <p class="card-text">{{description}}</p>
+                    <a href="#" class="card-link remove-btn" data-index="{{@index}}">delete</a>
+
+                </div>
+            </div>
+
+            {{/each}}
+
+        </script>
+
+        <script src="js/vendor/modernizr-3.5.0.min.js"></script>
+
+
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.10/handlebars.js"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/velocity/1.5.0/velocity.min.js"></script>
+        <script src="//cdn.jsdelivr.net/velocity/1.5/velocity.ui.min.js"></script>
+        <script src="js/plugins.js"></script>
+        <script src="dist/bundle.js"></script>
+        <script src="js/sugar-custom-2.js"></script>
+        <script src="js/main.js"></script>
+
+
+
+        <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
+        <script>
+            window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+            ga('create','UA-XXXXX-Y','auto');ga('send','pageview')
+        </script>
+        <script src="https://www.google-analytics.com/analytics.js" async defer></script>
+    </body>
+</html>
