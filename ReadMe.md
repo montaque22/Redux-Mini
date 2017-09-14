@@ -43,7 +43,7 @@
       return [...state, actions.myData];
   });
 
-  Store.registerReducer(''people', 'DELETE',(state = [], actions) => {
+  Store.registerReducer('people', 'DELETE',(state = [], actions) => {
       return [...state].filter((action, index) =>{
           return index != actions.index;
       });
