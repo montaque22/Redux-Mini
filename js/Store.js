@@ -1,26 +1,26 @@
 import "babel-polyfill";
 
+/**
+ * @namespace Store
+ * Creates a new data store. This is a singleton and will only create one store even if the constructor is
+ * called more than once.
+ * @example
+ * // instantiates a new store prefilling it with {names:['kathyln']} and allows all data to be stored in
+ * // session storage
+ * let manager = new Store({names:['kathyln']}, {enableCaching: true});
+ * @param initialData - data to initialize the store with
+ * @param {store_prop} options - see Store Options for more information
+ * @constructor
+ */
 export const Store = (function () {
     const registeredReducers    = [];
     const onBefore              = {};
-    const onComplete            = {};
+    const onAfter               = {};
     const CACHE_KEY             = 'redux-mini-cache';
     let cachedStore             = null;
     let enableCaching           = false;
     let shouldLoadFromCache     = false;
 
-
-    /**
-     * Creates a new data store. This is a singleton and will only create one store even if the constructor is
-     * called more than once.
-     * @example
-     * // instantiates a new store prefilling it with {names:['kathyln']} and allows all data to be stored in
-     * // session storage
-     * let manager = new Store({names:['kathyln']}, {enableCaching: true});
-     * @param initialData - data to initialize the store with
-     * @param {store_prop} options - see Store Options for more information
-     * @constructor
-     */
     function Store(initialData, options){
         options     = options || {};
 
@@ -53,6 +53,17 @@ export const Store = (function () {
 
         /**
          * Add listeners to respond to changes in the data store.
+         * @example
+         * ...
+         * // instantiates a new store prefilling it with {names:['kathyln']} and allows all data to be stored in
+         * // session storage
+         * let manager = new Store({names:['kathyln']}, {enableCaching: true});
+         *
+         * // the function will fire when manager.dispatch is called
+         * manager.subscribe(function(store){
+         *  // store contains the final copy of the store after it updates
+         *  console.log(store)
+         * })
          * @param { function } cb - runs whenever the changes to the data store are completed. This function
          * contains one parameter called store, which is a copy of the current store data
          */
@@ -65,6 +76,15 @@ export const Store = (function () {
 
         /**
          * Runs an action or an array of actions.
+         * @example
+         * ...
+         * // will trigger the reducer registered to 'ADD'
+         * manager.dispatch({type:'ADD', name:'John'})
+         *
+         * // will trigger the reducer registered to 'ADD' and 'DELETE'
+         * manager.dispatch([{type:'ADD', name:'Kim'}, {type:'DELETE', index:0}])
+         *
+         *
          * @param {Array.<Action> | Action} actions- runs the dispatch function or array of dispatch functions
          * for the given
          */
@@ -108,13 +128,13 @@ export const Store = (function () {
                 const reducers  = registeredReducers[event] || [];
 
                 // animation callback that runs before calculations
-                const callbacks = onBefore[event] || [];
+                const before = onBefore[event] || [];
 
                 // animation callback that runs after calculations
-                const completed = onComplete[event] || [];
+                const after = onAfter[event] || [];
 
                 // Store all the beforeEvents in the array first
-                callbacks.forEach(cb =>{
+                before.forEach(cb =>{
                     allEvents.push(cb.bind(null, Object.assign({}, store), action));
                 });
 
@@ -125,7 +145,7 @@ export const Store = (function () {
                 });
 
                 // Store all teh afterEvents in the array after calculations
-                completed.forEach(cb => {
+                after.forEach(cb => {
                     allEvents.push(cb.bind(null, Object.assign({}, store), action));
                 })
 
@@ -200,6 +220,7 @@ export const Store = (function () {
 
 
     /**
+     * @name Store.registerReducer
      * @description
      * This will register a reducer. See http://redux.js.org/docs/basics/Reducers.html for details on Reducers.
      *
@@ -254,6 +275,8 @@ export const Store = (function () {
     }
 
     /**
+     * @name Store.onBefore
+     * @desc
      * Callback function that will execute before the store is updated.
      * The first parameter is the name of the event that should trigger the callback.
      * The second parameter is a the callback function you want to trigger when the event is fired.
@@ -272,6 +295,8 @@ export const Store = (function () {
     Store.onBefore = callbackHelper(onBefore);
 
     /**
+     * @name Store.onAfter
+     * @description
      * Callback function that will execute after the store is updated
      * The first parameter is the name of the event that should trigger the callback.
      * The second parameter is a the callback function you want to trigger when the event is fired.
@@ -287,7 +312,7 @@ export const Store = (function () {
      * @param {string} event - name of event to attach the callback
      * @param {function} cb - Callback Function that should be used to run animations.
      */
-    Store.onComplete = callbackHelper(onComplete);
+    Store.onAfter = callbackHelper(onAfter);
 
     /**
      * Stores all of the actions in session storage.
@@ -298,6 +323,8 @@ export const Store = (function () {
     };
 
     /**
+     * @name Store.shouldLoadFromCache
+     * @desc
      * Uses the data from session storage to instantiate the store. Must have {enableCaching} set to true.
      * @param {boolean} loadFromCache - if true, the store will instantiate using the data stored from the session
      * storage

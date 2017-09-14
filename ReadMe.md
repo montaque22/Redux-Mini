@@ -50,34 +50,19 @@ otherwise check out the main.js file:
 
 ### Table of Contents
 
--   [Action](#action)
 -   [Store](#store)
     -   [subscribe](#subscribe)
     -   [dispatch](#dispatch)
     -   [getExecutedActions](#getexecutedactions)
     -   [enableCaching](#enablecaching)
-    -   [registerReducer](#registerreducer)
-    -   [onBefore](#onbefore)
-    -   [onComplete](#oncomplete)
-    -   [shouldLoadFromCache](#shouldloadfromcache)
+-   [Action](#action)
 -   [store_prop](#store_prop)
-
-## Action
-
-This is the redux action object. It contains a some kind of key for the reducer to know what operation to run
-against the action object holds.
-To understand more about Actions, visit this link: <http://redux.js.org/docs/basics/Actions.html>
-
-Type: [object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)
-
-**Properties**
-
--   `type` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** used to determine which reducer to run.
+-   [Store.registerReducer](#storeregisterreducer)
+-   [Store.onBefore](#storeonbefore)
+-   [Store.onAfter](#storeonafter)
+-   [Store.shouldLoadFromCache](#storeshouldloadfromcache)
 
 ## Store
-
-Creates a new data store. This is a singleton and will only create one store even if the constructor is
-called more than once.
 
 **Parameters**
 
@@ -101,6 +86,21 @@ Add listeners to respond to changes in the data store.
 -   `cb` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** runs whenever the changes to the data store are completed. This function
     contains one parameter called store, which is a copy of the current store data
 
+**Examples**
+
+```javascript
+...
+// instantiates a new store prefilling it with {names:['kathyln']} and allows all data to be stored in
+// session storage
+let manager = new Store({names:['kathyln']}, {enableCaching: true});
+
+// the function will fire when manager.dispatch is called
+manager.subscribe(function(store){
+ // store contains the final copy of the store after it updates
+ console.log(store)
+})
+```
+
 ### dispatch
 
 Runs an action or an array of actions.
@@ -110,6 +110,17 @@ Runs an action or an array of actions.
 -   `actions`  
 -   `actions-null` **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Action](#action)> | [Action](#action))** runs the dispatch function or array of dispatch functions
     for the given
+
+**Examples**
+
+```javascript
+...
+// will trigger the reducer registered to 'ADD'
+manager.dispatch({type:'ADD', name:'John'})
+
+// will trigger the reducer registered to 'ADD' and 'DELETE'
+manager.dispatch([{type:'ADD', name:'Kim'}, {type:'DELETE', index:0}])
+```
 
 ### getExecutedActions
 
@@ -125,7 +136,30 @@ Stores all of the actions in session storage.
 
 -   `shouldEnableCaching` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**  if true, it activates the session storage.
 
-### registerReducer
+## Action
+
+This is the redux action object. It contains a some kind of key for the reducer to know what operation to run
+against the action object holds.
+To understand more about Actions, visit this link: <http://redux.js.org/docs/basics/Actions.html>
+
+Type: [object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)
+
+**Properties**
+
+-   `type` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** used to determine which reducer to run.
+
+## store_prop
+
+Type: [object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)
+
+**Properties**
+
+-   `actionKey` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** the key that the reducer should look at to determine which reducer should
+    respond to the given action
+-   `enableCaching` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** enables the use of session storage
+-   `shouldLoadFromCache` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** loads the data from session storage on initialization
+
+## Store.registerReducer
 
 This will register a reducer. See <http://redux.js.org/docs/basics/Reducers.html> for details on Reducers.
 
@@ -161,7 +195,7 @@ Store.registerReducer('foo', 'bar', function (state = {}, action){
 })
 ```
 
-### onBefore
+## Store.onBefore
 
 Callback function that will execute before the store is updated.
 The first parameter is the name of the event that should trigger the callback.
@@ -181,7 +215,7 @@ You must call next() to run the other callbacks, otherwise the other functions w
 -   `event` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** name of event to attach the callback
 -   `cb` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** Callback Function that should be used to run animations.
 
-### onComplete
+## Store.onAfter
 
 Callback function that will execute after the store is updated
 The first parameter is the name of the event that should trigger the callback.
@@ -201,7 +235,7 @@ You must call next() to run the other callbacks, otherwise the other functions w
 -   `event` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** name of event to attach the callback
 -   `cb` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** Callback Function that should be used to run animations.
 
-### shouldLoadFromCache
+## Store.shouldLoadFromCache
 
 Uses the data from session storage to instantiate the store. Must have {enableCaching} set to true.
 
@@ -209,14 +243,3 @@ Uses the data from session storage to instantiate the store. Must have {enableCa
 
 -   `loadFromCache` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** if true, the store will instantiate using the data stored from the session
     storage
-
-## store_prop
-
-Type: [object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)
-
-**Properties**
-
--   `actionKey` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** the key that the reducer should look at to determine which reducer should
-    respond to the given action
--   `enableCaching` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** enables the use of session storage
--   `shouldLoadFromCache` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** loads the data from session storage on initialization
