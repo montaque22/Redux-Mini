@@ -2,12 +2,15 @@ import "babel-polyfill";
 
 /**
  * @namespace Store
+ * @description
  * Creates a new data store. This is a singleton and will only create one store even if the constructor is
  * called more than once.
+ *
  * @example
  * // instantiates a new store prefilling it with {names:['kathyln']} and allows all data to be stored in
  * // session storage
  * let manager = new Store({names:['kathyln']}, {enableCaching: true});
+ *
  * @param initialData - data to initialize the store with
  * @param {store_prop} options - see Store Options for more information
  * @constructor

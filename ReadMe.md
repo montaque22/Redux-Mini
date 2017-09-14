@@ -64,6 +64,9 @@ otherwise check out the main.js file:
 
 ## Store
 
+Creates a new data store. This is a singleton and will only create one store even if the constructor is
+called more than once.
+
 **Parameters**
 
 -   `initialData`  data to initialize the store with
