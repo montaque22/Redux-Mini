@@ -51,8 +51,6 @@ otherwise check out the main.js file:
 ### Table of Contents
 
 -   [Action](#action)
--   [reducer](#reducer)
--   [onComplete](#oncomplete)
 -   [Store](#store)
     -   [subscribe](#subscribe)
     -   [dispatch](#dispatch)
@@ -60,7 +58,7 @@ otherwise check out the main.js file:
     -   [enableCaching](#enablecaching)
     -   [registerReducer](#registerreducer)
     -   [onBefore](#onbefore)
-    -   [onComplete](#oncomplete-1)
+    -   [onComplete](#oncomplete)
     -   [shouldLoadFromCache](#shouldloadfromcache)
 -   [store_prop](#store_prop)
 
@@ -76,31 +74,6 @@ Type: [object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference
 
 -   `type` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** used to determine which reducer to run.
 
-## reducer
-
-Callback: Reducers are used organize data into the store.
-See <http://redux.js.org/docs/basics/Reducers.html> for details on Reducers.
-
-Type: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)
-
-**Parameters**
-
--   `state` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** contains the data from the store at the event the callback was registered for.
--   `action` **[Action](#action)** contains the data and the event type (actionKey) used to add to the store.
-
-## onComplete
-
-Callback Function: Callback should be used to run animations. You must call next() to run the other callbacks (if
-there are any) otherwise the other functions will hang.
-
-Type: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)
-
-**Parameters**
-
--   `store` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** contains the data from the store at the event the callback was registered for.
--   `action` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** The action that is associated with the dispatch
--   `next` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** function to run the next callback
-
 ## Store
 
 Creates a new data store. This is a singleton and will only create one store even if the constructor is
@@ -110,6 +83,14 @@ called more than once.
 
 -   `initialData`  data to initialize the store with
 -   `options` **[store_prop](#store_prop)** see Store Options for more information
+
+**Examples**
+
+```javascript
+// instantiates a new store prefilling it with {names:['kathyln']} and allows all data to be stored in
+// session storage
+let manager = new Store({names:['kathyln']}, {enableCaching: true});
+```
 
 ### subscribe
 
@@ -148,33 +129,77 @@ Stores all of the actions in session storage.
 
 This will register a reducer. See <http://redux.js.org/docs/basics/Reducers.html> for details on Reducers.
 
-The given reducer will fire only when the eventName matches a dispatched action type (or
+The given reducer will fire only when the eventName matches a dispatched action's type (or
 actionKey).  The result from the reducer will be saved in the data store under the given propertyPath.
-Note: Reducers still cannot mutate the data. Data should be immutable.
+Reducers must not mutate the data and should treat data as though it is immutable.
+The Reduce callback has 2 parameters:
+
+state - This is copy of the data at the propertyName given. It is advisable to give return a default state if
+an action is not applicable.
+
+action - action objects hold the the data the reducer needs to organize and manipulate. Typically, Action objects
+contain a key(type) of some kind so the reducer knows how to handle it (see here for more info on actions:
+<http://redux.js.org/docs/basics/Actions.html>). The reducers often have switch statements that matches the
+type and returns some value. However, Redux-Mini uses the event name given
+to the register match the actions so the reducer will only run when its type matches the eventName given.
 
 **Parameters**
 
 -   `propertyPath` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** path in the data store to save the results from the reducer
 -   `eventName` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)**  Custom(unique) event to associate with the action
--   `reducer` **[reducer](#reducer)** callback function that returns a non-mutated result.
+-   `reducer` **reducer** callback function that returns a non-mutated result.
+
+**Examples**
+
+```javascript
+// State is initialized to {}
+// The function will only run when action.type === 'bar'
+Store.registerReducer('foo', 'bar', function (state = {}, action){
+ // If action.data is empty, this function will still return an empty object.
+ // As a result the store the store will look like this: {foo:{}} instead of {foo: undefined} or {}
+ return Object.assign({}, state, action.data)
+})
+```
 
 ### onBefore
 
-Callback function that will execute before the store is updated
+Callback function that will execute before the store is updated.
+The first parameter is the name of the event that should trigger the callback.
+The second parameter is a the callback function you want to trigger when the event is fired.
+The callback has has three parameters:
+
+Store - which is a copy of the store data at that point.
+
+Action - the action object used to dispatch the event
+
+Next - alerts the callback that it is complete and can run the next animation.
+
+You must call next() to run the other callbacks, otherwise the other functions will hang.
 
 **Parameters**
 
 -   `event` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** name of event to attach the callback
--   `cb` **[onComplete](#oncomplete)** name of event to attach the callback
+-   `cb` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** Callback Function that should be used to run animations.
 
 ### onComplete
 
 Callback function that will execute after the store is updated
+The first parameter is the name of the event that should trigger the callback.
+The second parameter is a the callback function you want to trigger when the event is fired.
+The callback has has three parameters:
+
+Store - which is a copy of the store data at that point.
+
+Action - the action object used to dispatch the event
+
+Next - alerts the callback that it is complete and can run the next animation.
+
+You must call next() to run the other callbacks, otherwise the other functions will hang.
 
 **Parameters**
 
 -   `event` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** name of event to attach the callback
--   `cb` **[onComplete](#oncomplete)** name of event to attach the callback
+-   `cb` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** Callback Function that should be used to run animations.
 
 ### shouldLoadFromCache
 

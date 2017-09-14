@@ -13,7 +13,10 @@ export const Store = (function () {
     /**
      * Creates a new data store. This is a singleton and will only create one store even if the constructor is
      * called more than once.
-     *
+     * @example
+     * // instantiates a new store prefilling it with {names:['kathyln']} and allows all data to be stored in
+     * // session storage
+     * let manager = new Store({names:['kathyln']}, {enableCaching: true});
      * @param initialData - data to initialize the store with
      * @param {store_prop} options - see Store Options for more information
      * @constructor
@@ -200,9 +203,30 @@ export const Store = (function () {
      * @description
      * This will register a reducer. See http://redux.js.org/docs/basics/Reducers.html for details on Reducers.
      *
-     * The given reducer will fire only when the eventName matches a dispatched action type (or
+     * The given reducer will fire only when the eventName matches a dispatched action's type (or
      * actionKey).  The result from the reducer will be saved in the data store under the given propertyPath.
-     * Note: Reducers still cannot mutate the data. Data should be immutable.
+     * Reducers must not mutate the data and should treat data as though it is immutable.
+     * The Reduce callback has 2 parameters:
+     *
+     * state - This is copy of the data at the propertyName given. It is advisable to give return a default state if
+     * an action is not applicable.
+     *
+     * action - action objects hold the the data the reducer needs to organize and manipulate. Typically, Action objects
+     * contain a key(type) of some kind so the reducer knows how to handle it (see here for more info on actions:
+     * http://redux.js.org/docs/basics/Actions.html). The reducers often have switch statements that matches the
+     * type and returns some value. However, Redux-Mini uses the event name given
+     * to the register match the actions so the reducer will only run when its type matches the eventName given.
+     *
+     * @example
+     * // State is initialized to {}
+     * // The function will only run when action.type === 'bar'
+     * Store.registerReducer('foo', 'bar', function (state = {}, action){
+     *  // If action.data is empty, this function will still return an empty object.
+     *  // As a result the store the store will look like this: {foo:{}} instead of {foo: undefined} or {}
+     *  return Object.assign({}, state, action.data)
+     * })
+     *
+     *
      *
      * @param {string} propertyPath - path in the data store to save the results from the reducer
      * @param {string} eventName -  Custom(unique) event to associate with the action
@@ -230,16 +254,38 @@ export const Store = (function () {
     }
 
     /**
-     * Callback function that will execute before the store is updated
+     * Callback function that will execute before the store is updated.
+     * The first parameter is the name of the event that should trigger the callback.
+     * The second parameter is a the callback function you want to trigger when the event is fired.
+     * The callback has has three parameters:
+     *
+     * Store - which is a copy of the store data at that point.
+     *
+     * Action - the action object used to dispatch the event
+     *
+     * Next - alerts the callback that it is complete and can run the next animation.
+     *
+     * You must call next() to run the other callbacks, otherwise the other functions will hang.
      * @param {string} event - name of event to attach the callback
-     * @param {onComplete} cb - name of event to attach the callback
+     * @param {function} cb - Callback Function that should be used to run animations.
      */
     Store.onBefore = callbackHelper(onBefore);
 
     /**
      * Callback function that will execute after the store is updated
+     * The first parameter is the name of the event that should trigger the callback.
+     * The second parameter is a the callback function you want to trigger when the event is fired.
+     * The callback has has three parameters:
+     *
+     * Store - which is a copy of the store data at that point.
+     *
+     * Action - the action object used to dispatch the event
+     *
+     * Next - alerts the callback that it is complete and can run the next animation.
+     *
+     * You must call next() to run the other callbacks, otherwise the other functions will hang.
      * @param {string} event - name of event to attach the callback
-     * @param {onComplete} cb - name of event to attach the callback
+     * @param {function} cb - Callback Function that should be used to run animations.
      */
     Store.onComplete = callbackHelper(onComplete);
 
@@ -263,27 +309,6 @@ export const Store = (function () {
     return Store;
 })();
 
-/**
- * @function
- * @callback onComplete
- * @description
- * Callback Function: Callback should be used to run animations. You must call next() to run the other callbacks (if
- * there are any) otherwise the other functions will hang.
- * @param {object} store - contains the data from the store at the event the callback was registered for.
- * @param {object} action - The action that is associated with the dispatch
- * @param {function} next - function to run the next callback
- */
-
-
-/**
- * @function
- * @callback reducer
- * @description
- * Callback: Reducers are used organize data into the store.
- * See http://redux.js.org/docs/basics/Reducers.html for details on Reducers.
- * @param {object} state - contains the data from the store at the event the callback was registered for.
- * @param {Action} action - contains the data and the event type (actionKey) used to add to the store.
- */
 
 /**
  * @typedef {object} Action
