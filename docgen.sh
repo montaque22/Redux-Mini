@@ -1,2 +1,12 @@
 #!/usr/bin/env bash
-documentation build ./js/Store.js -f md > ReadMe.md
+echo "Copy Intro Mark Down..."
+cp -f intro.md ReadMe.md
+
+echo "Building Documentation..."
+documentation build ./js/Store.js -f md > documentation.txt
+
+echo "Append documentation to ReadMe.md"
+tail -n +2 documentation.txt >> ReadMe.md
+
+echo "Clean Up"
+rm documentation.txt
