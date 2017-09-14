@@ -1,7 +1,6 @@
 
 # Redux-Mini
 
-![Redux-Mini](./redux-gif.gif "See it in action")
 Redux-Mini is a light weight Redux framework. It allows you to manage the state of your data utilizing the same
 principles found on the Redux website.
 To learn more about Redux and its principles visit: http://redux.js.org/docs/introduction/CoreConcepts.html
