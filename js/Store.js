@@ -200,7 +200,7 @@ export const Store = (function () {
             commands = [...commands, ...actions];
 
             if(enableCaching);
-                sessionStorage.setItem(CACHE_KEY, JSON.stringify(commands))
+            sessionStorage.setItem(CACHE_KEY, JSON.stringify(commands))
         }
 
         function startup(){
@@ -258,6 +258,9 @@ export const Store = (function () {
      */
     Store.registerReducer = (propertyPath, eventName, reducer)=>{
 
+        if(!propertyPath || !eventName || typeof reducer != 'function')
+            throw new Error('Parameters expect a string, string, function');
+        
         let reducers    = registeredReducers[eventName] || [];
 
         reducer.path = propertyPath;
@@ -271,6 +274,9 @@ export const Store = (function () {
     function callbackHelper(collection){
 
         return (event, cb) => {
+            if(typeof event != "string" || typeof cb != 'function')
+                throw new Error('Expecting string, function');
+            
             const callbacks = collection[event] || [];
             callbacks.push(cb)
             collection[event] = callbacks;
@@ -322,7 +328,7 @@ export const Store = (function () {
      * @param {boolean} shouldEnableCaching -  if true, it activates the session storage.
      */
     Store.prototype.enableCaching = (shouldEnableCaching) =>{
-        enableCaching = shouldEnableCaching;
+        enableCaching = !!shouldEnableCaching;
     };
 
     /**

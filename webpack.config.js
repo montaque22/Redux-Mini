@@ -5,7 +5,7 @@ module.exports = {
     output: {
 
         libraryTarget: "umd",
-        filename: 'bundle.js',
+        filename: 'redux.min.js',
         path: path.resolve(__dirname,'dist')
     },
     devtool:'source-map',
@@ -23,4 +23,5 @@ module.exports = {
             }
         ]
     }
+
 };
