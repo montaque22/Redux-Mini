@@ -1,5 +1,12 @@
 import "babel-polyfill";
 
+function deleteAllProps(obj){
+    let keys = Object.keys(obj);
+    for(let index in keys){
+        const key = keys[index];
+        delete obj[key]
+    }
+}
 /**
  * @namespace Store
  * @description
@@ -16,7 +23,7 @@ import "babel-polyfill";
  * @constructor
  */
 export const Store = (function () {
-    const registeredReducers    = [];
+    const registeredReducers    = {};
     const onBefore              = {};
     const onAfter               = {};
     const CACHE_KEY             = 'redux-mini-cache';
@@ -43,11 +50,7 @@ export const Store = (function () {
          * @property {boolean} enableCaching - enables the use of session storage
          * @property {boolean} shouldLoadFromCache - loads the data from session storage on initialization
          */
-        const {
-                  actionKey = 'type',
-                  enableCaching = enableCaching,
-                  shouldLoadFromCache
-              } = options;
+        const { actionKey = 'type' } = options;
 
 
         startup();
@@ -71,6 +74,9 @@ export const Store = (function () {
          * contains one parameter called store, which is a copy of the current store data
          */
         this.subscribe = (cb) =>{
+            if(typeof cb != 'function')
+                throw new Error('the #subscribe function expected a function');
+
             cb(data);
             subscribers.push(cb);
         };
@@ -92,7 +98,10 @@ export const Store = (function () {
          * for the given
          */
         this.dispatch = (actions)=>{
-            reduce(actions);
+            if(Array.isArray(actions) || typeof actions === 'object')
+                reduce(actions);
+            else
+                throw new Error('dispatch is expecting an array of actions or an action object')
         };
 
         /**
@@ -123,6 +132,9 @@ export const Store = (function () {
 
             // cycle through all the action
             actions.forEach(action =>{
+
+                if(typeof action != 'object')
+                    throw new Error('dispatch needs an Action Object or an array of Action Objects');
 
                 // Event from dispatch
                 const event     = action[actionKey];
@@ -199,12 +211,12 @@ export const Store = (function () {
             // If the user is loading from cache then
             commands = [...commands, ...actions];
 
-            if(enableCaching);
+            if(enableCaching && sessionStorage);
             sessionStorage.setItem(CACHE_KEY, JSON.stringify(commands))
         }
 
         function startup(){
-            const cache = sessionStorage.getItem(CACHE_KEY);
+            const cache = !!sessionStorage && sessionStorage.getItem(CACHE_KEY);
             let data    = null;
 
             if(shouldLoadFromCache && cache)
@@ -260,7 +272,7 @@ export const Store = (function () {
 
         if(!propertyPath || !eventName || typeof reducer != 'function')
             throw new Error('Parameters expect a string, string, function');
-        
+
         let reducers    = registeredReducers[eventName] || [];
 
         reducer.path = propertyPath;
@@ -276,13 +288,20 @@ export const Store = (function () {
         return (event, cb) => {
             if(typeof event != "string" || typeof cb != 'function')
                 throw new Error('Expecting string, function');
-            
+
             const callbacks = collection[event] || [];
             callbacks.push(cb)
             collection[event] = callbacks;
         };
     }
 
+    /**
+     * Returns the reducers
+     * @return {Array}
+     */
+    Store.getRegisteredReducers = () => {
+        return registeredReducers;
+    }
     /**
      * @name Store.onBefore
      * @desc
@@ -332,6 +351,21 @@ export const Store = (function () {
     };
 
     /**
+     * Returns whether or not caching ability is enabled
+     * @return {boolean}
+     */
+    Store.prototype.isCachingEnabled = () => {
+        return enableCaching;
+    };
+
+    /**
+     * Returns whether or not the Store will load from cache
+     * @return {boolean}
+     */
+    Store.willLoadFromCache = () => {
+        return shouldLoadFromCache;
+    }
+    /**
      * @name Store.shouldLoadFromCache
      * @desc
      * Uses the data from session storage to instantiate the store. Must have {enableCaching} set to true.
@@ -339,7 +373,18 @@ export const Store = (function () {
      * storage
      */
     Store.shouldLoadFromCache = (loadFromCache) =>{
-        shouldLoadFromCache = loadFromCache;
+        shouldLoadFromCache = !!loadFromCache;
+    };
+
+
+    Store.clearAll = () =>{
+        cachedStore             = null;
+        enableCaching           = false;
+        shouldLoadFromCache     = false;
+        deleteAllProps(registeredReducers);
+        deleteAllProps(onBefore);
+        deleteAllProps(onAfter)
+
     };
 
     return Store;
@@ -355,3 +400,4 @@ export const Store = (function () {
  * @property {string} type - used to determine which reducer to run.
  * @property ...props - any other number of properties to send to the reducer.
  */
+

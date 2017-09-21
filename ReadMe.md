@@ -58,6 +58,9 @@ otherwise check out the main.js file:
     -   [dispatch](#dispatch)
     -   [getExecutedActions](#getexecutedactions)
     -   [enableCaching](#enablecaching)
+    -   [isCachingEnabled](#iscachingenabled)
+    -   [getRegisteredReducers](#getregisteredreducers)
+    -   [willLoadFromCache](#willloadfromcache)
 -   [Action](#action)
 -   [store_prop](#store_prop)
 -   [Store.registerReducer](#storeregisterreducer)
@@ -141,6 +144,24 @@ Stores all of the actions in session storage.
 **Parameters**
 
 -   `shouldEnableCaching` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**  if true, it activates the session storage.
+
+### isCachingEnabled
+
+Returns whether or not caching ability is enabled
+
+Returns **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** 
+
+### getRegisteredReducers
+
+Returns the reducers
+
+Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** 
+
+### willLoadFromCache
+
+Returns whether or not the Store will load from cache
+
+Returns **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** 
 
 ## Action
 
