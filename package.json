@@ -5,7 +5,7 @@
     },
     "scripts": {
         "compile": "webpack --config webpack.config.js",
-        "test": "nyc mocha ./test/ && nyc report"
+        "test": "mocha --require mock-local-storage"
     },
     "devDependencies": {
         "babel-core": "^6.26.0",
