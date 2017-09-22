@@ -22,7 +22,7 @@
         "webpack": "^3.5.5"
     },
     "name": "redux-mini",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "light-weight redux pattern to handle data flow",
     "main": "./dist/redux.min.js",
     "repository": "https://github.com/montaque22/Redux-Mini.git",

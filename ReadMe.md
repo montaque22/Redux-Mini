@@ -51,6 +51,33 @@ otherwise check out the main.js file:
   { people: [{name: 'jerry'}, {name: 'kayla'}] }
  ~~~~
 
+## Installation
+
+Using Yarn
+
+```Bash 
+Yarn add redux-mini
+```
+
+Using NPM
+```Bash
+npm install redux-mini
+```
+
+##Instantiate
+
+This framework is AMD so can require it in several ways:
+```Javascript
+// Using Require
+const Store =  require('redux-mini').Store
+
+// Using Imports
+import { Store } from 'redux-mini'
+
+// It is also accessible from the global namespace of 'Store'
+window.Store // or just Store
+```
+
 ### Table of Contents
 
 -   [Store](#store)
