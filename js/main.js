@@ -10,7 +10,7 @@ $(document).ready(()=>{
         });
     });
 
-    Store.onComplete('ADD', (store, action, next) => {
+    Store.onAfter('ADD', (store, action, next) => {
 
         drawCard(store);
         updateObjectMap(store);
@@ -22,7 +22,7 @@ $(document).ready(()=>{
 
     });
 
-    Store.onComplete('DELETE', (store, action, next) =>{
+    Store.onAfter('DELETE', (store, action, next) =>{
 
         const $card =  $($('.card').get(action.index));
         updateObjectMap(store);
@@ -35,16 +35,19 @@ $(document).ready(()=>{
     });
 
 
+    Store.shouldLoadFromCache(true);
+
     const source    = $("#todo-items").html();
     const template  = Handlebars.compile(source);
     const itemInput = $('#item');
     const todos     = $('#todos');
-    const store     = new Store(null, {enableCaching: true, shouldLoadFromCache: true, subscribers: [
+    const store     = new Store(null, {subscribers: [
         function(store){
             // $('.object-map').html(JSON.stringify(store, null, 4));
         }
     ]});
 
+    store.enableCaching(true);
 
     itemInput.keypress((e) => {
         if(e.keyCode == 13)

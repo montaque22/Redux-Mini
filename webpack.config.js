@@ -1,9 +1,9 @@
-const path = require('path');
+const path              = require('path');
+const UglifyJSPlugin    = require('uglifyjs-webpack-plugin')
 
 module.exports = {
     entry: ['babel-polyfill','./js/store.js'],
     output: {
-
         libraryTarget: "umd",
         filename: 'redux.min.js',
         path: path.resolve(__dirname,'dist')
@@ -22,6 +22,7 @@ module.exports = {
                 }
             }
         ]
-    }
+    },
+    plugins: [ new UglifyJSPlugin() ]
 
 };

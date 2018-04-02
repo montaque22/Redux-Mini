@@ -235,7 +235,7 @@ export const Store = (function () {
 
 
     /**
-     * @name Store.registerReducer
+     * @static
      * @description
      * This will register a reducer. See http://redux.js.org/docs/basics/Reducers.html for details on Reducers.
      *
@@ -296,14 +296,16 @@ export const Store = (function () {
     }
 
     /**
+     * @static
      * Returns the reducers
      * @return {Array}
      */
     Store.getRegisteredReducers = () => {
         return registeredReducers;
     }
+
     /**
-     * @name Store.onBefore
+     * @static
      * @desc
      * Callback function that will execute before the store is updated.
      * The first parameter is the name of the event that should trigger the callback.
@@ -323,7 +325,7 @@ export const Store = (function () {
     Store.onBefore = callbackHelper(onBefore);
 
     /**
-     * @name Store.onAfter
+     * @static
      * @description
      * Callback function that will execute after the store is updated
      * The first parameter is the name of the event that should trigger the callback.
@@ -331,9 +333,7 @@ export const Store = (function () {
      * The callback has has three parameters:
      *
      * Store - which is a copy of the store data at that point.
-     *
      * Action - the action object used to dispatch the event
-     *
      * Next - alerts the callback that it is complete and can run the next animation.
      *
      * You must call next() to run the other callbacks, otherwise the other functions will hang.
@@ -359,6 +359,7 @@ export const Store = (function () {
     };
 
     /**
+     * @static
      * Returns whether or not the Store will load from cache
      * @return {boolean}
      */
@@ -366,7 +367,7 @@ export const Store = (function () {
         return shouldLoadFromCache;
     }
     /**
-     * @name Store.shouldLoadFromCache
+     * @static
      * @desc
      * Uses the data from session storage to instantiate the store. Must have {enableCaching} set to true.
      * @param {boolean} loadFromCache - if true, the store will instantiate using the data stored from the session
